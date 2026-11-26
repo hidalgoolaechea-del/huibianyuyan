@@ -1,6 +1,8 @@
 # assembly-lab-report
 
 > WorkBuddy Skill · 一键生成《汇编语言》（王爽，第 2 版）课程实验过程报告（.docx）
+>
+> 仓库地址：https://github.com/hidalgoolaechea-del/huibianyuyan
 
 把「做一份汇编实验报告」的完整流程封装为可复用的配置驱动流水线：读取教材任务 → DOSBox / MASM / DEBUG 采集运行截图 → 核对真实寄存器与内存数据 → 填充配置 JSON → 生成符合实验报告模板版式的 Word 文档 → 检查排版 → 交付。
 
@@ -41,7 +43,7 @@ assembly-lab-report/
 
 **方式 A · 下载 zip（推荐给不熟 git 的同学）**
 
-下载仓库里的 `dist/assembly-lab-report.zip`，解压后把整个 `assembly-lab-report` 文件夹放到：
+下载仓库里的 `dist/assembly-lab-report.zip`（直链：https://github.com/hidalgoolaechea-del/huibianyuyan/raw/main/dist/assembly-lab-report.zip），解压后把整个 `assembly-lab-report` 文件夹放到：
 
 ```
 C:\Users\<你的用户名>\.workbuddy\skills\assembly-lab-report\
@@ -50,7 +52,7 @@ C:\Users\<你的用户名>\.workbuddy\skills\assembly-lab-report\
 **方式 B · clone 仓库**
 
 ```bash
-git clone https://github.com/<owner>/assembly-lab-report.git \
+git clone https://github.com/hidalgoolaechea-del/huibianyuyan.git \
   "C:/Users/<你的用户名>/.workbuddy/skills/assembly-lab-report"
 ```
 
