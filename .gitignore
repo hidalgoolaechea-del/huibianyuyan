@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 本地生成物（不入库）
+output/
+shots/
+final/
+final2/
+final3/
+*.docx
+*.pdf
+*.xlsx
+sheet.png
+report.config.json
+
+# 保留可分享的安装包
+!dist/assembly-lab-report.zip

@@ -1,0 +1,95 @@
+{
+  "_comment": "示例配置：实验三。复制本文件到工作目录后按实际情况修改各字段，再用 generate_report.py 生成。output 与 images_dir 为占位路径，请改成自己机器上的实际目录。姓名/学号/班级保持为空。",
+
+  "output": "./output/实验报告-实验三-编程、编译、连接、跟踪.docx",
+  "school_header": "计电学院《汇编语言》实验报告",
+  "project": "编程、编译、连接、跟踪",
+  "date": "2026年11月11号",
+  "lab_reference": "实验三（第 93～95 页）",
+
+  "class_name": "",
+  "name": "",
+  "student_id": "",
+  "score": "",
+
+  "images_dir": "./final3",
+  "image_width_cm": 11.8,
+
+  "goals": [
+    "（1）掌握汇编语言源程序从编辑（.asm）到编译（masm）、连接（link）、生成 .exe 文件的完整过程；",
+    "（2）学会用 Debug 加载、跟踪 EXE 程序，观察寄存器和栈中内容的变化；",
+    "（3）理解程序加载后 DS 指向 PSP（程序段前缀）而 CS:IP 指向程序入口的现象。"
+  ],
+
+  "sections": [
+    {
+      "title": "（1）编辑源程序",
+      "blocks": [
+        { "type": "text", "value": "将教材实验3的程序用记事本保存为 C:\\masm\\t1.asm：程序把 2000H 段设为栈段，从栈顶 2000:000A 开始做一组 push、pop 操作，最后返回。" },
+        { "type": "code", "lines": [
+          "assume cs:codesg",
+          "codesg segment",
+          "    mov ax,2000H",
+          "    mov ss,ax",
+          "    mov sp,0",
+          "    add sp,10",
+          "    pop ax",
+          "    pop bx",
+          "    push ax",
+          "    push bx",
+          "    pop ax",
+          "    pop bx",
+          "    mov ax,4c00H",
+          "    int 21H",
+          "codesg ends",
+          "end"
+        ] }
+      ]
+    },
+    {
+      "title": "（2）编译、连接",
+      "blocks": [
+        { "type": "text", "value": "运行 masm t1 生成 t1.obj，结果为 0 Warning Errors、0 Severe Errors；运行 link t1 生成 t1.exe，出现“LINK : warning L4021: no stack segment”警告——程序中没有定义栈段，对本程序无影响；dir 查看 t1.exe 共 534 字节。" },
+        { "type": "image", "file": "s3_asm.png" }
+      ]
+    },
+    {
+      "title": "（3）用 Debug 加载并查看 PSP",
+      "blocks": [
+        { "type": "text", "value": "debug t1.exe 加载后用 r 查看：CX=0016（程序长度 22 字节）、CS=076A、IP=0000、DS=ES=075A——DS 并不指向程序，而是指向程序段前缀 PSP。d ds:0 l 2 显示 PSP 头两个字节为 CD 20，即 int 20h 的机器码，程序正是靠它返回；u 0 l 6 核对前三条指令的机器码。" },
+        { "type": "image", "file": "s3_load.png" }
+      ]
+    },
+    {
+      "title": "（4）用 T 命令跟踪，记录每一步的寄存器和栈顶",
+      "blocks": [
+        { "type": "text", "value": "从 CS:IP=076A:0000 起用 T 命令逐条执行，每一步执行后的寄存器内容和栈顶如下：" },
+        { "type": "data", "rows": [
+          ["mov ax,2000H", "AX=2000H"],
+          ["mov ss,ax", "SS=2000H；下一条 mov sp,0 被紧接着执行，SP=0000H"],
+          ["add sp,10", "SP=000AH，栈顶移到 2000:000A"],
+          ["pop ax", "AX=0000H，SP=000CH（弹出 2000:000A～000B 中的字 0000）"],
+          ["pop bx", "BX=0000H，SP=000EH"],
+          ["push ax", "SP=000CH，2000:000C～000D 压入 00 00"],
+          ["push bx", "SP=000AH，2000:000A～000B 压入 00 00"],
+          ["pop ax", "AX=0000H，SP=000CH"],
+          ["pop bx", "BX=0000H，SP=000EH"]
+        ] },
+        { "type": "text", "before": 2, "value": "d 2000:0 f 中 2000:0008～000F 的 0D 00 6A 07 A3 01 是 T 命令单步中断压栈保存的 IP、CS 和标志寄存器现场。" },
+        { "type": "image", "file": "s3_trace.png" }
+      ]
+    },
+    {
+      "title": "（5）执行到程序结束",
+      "blocks": [
+        { "type": "text", "value": "用 g 命令执行到程序末尾，显示 Program terminated normally；d 2000:0 f 可见 2000:0008～000F 中留下的 IP（0016）、CS（076A）和标志寄存器现场信息。" },
+        { "type": "image", "file": "s3_t2.png" }
+      ]
+    }
+  ],
+
+  "thoughts": [
+    "这次实验完整地走了一遍“编辑—编译—连接—跟踪”的流程。编译连接时出现的 L4021 警告让我明白连接器是在检查程序有没有定义栈段；而 debug 加载后 DS 指向 PSP、PSP 头两个字节是 CD 20（int 20h 的机器码），把教材里“程序返回”的原理落实到了具体的内存单元上。",
+    "用 T 命令逐步跟踪时，我又一次看到 mov ss,ax 之后 mov sp,0 被紧接着执行的现象，并把每一步的 SP 变化与 d 2000:0 f 中看到的栈内容对照验证。预测与实际一致时印象特别深，比单纯看书理解得扎实多了。"
+  ]
+}

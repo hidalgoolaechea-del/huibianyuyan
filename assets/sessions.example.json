@@ -1,0 +1,22 @@
+[
+  {
+    "name": "s3_asm",
+    "start": "none",
+    "lines": ["masm t1;", "link t1;", "dir t1.exe"]
+  },
+  {
+    "name": "s3_load",
+    "start": "debug t1.exe",
+    "lines": ["r", "d ds:0 l 2", "u 0 l 6"]
+  },
+  {
+    "name": "s3_trace",
+    "start": "debug t1.exe",
+    "lines": ["t", "t", "t", "t", "t", "d 2000:0 f"]
+  },
+  {
+    "name": "s3_t2",
+    "start": "debug t1.exe",
+    "lines": ["g 12", "r", "d 2000:0 f"]
+  }
+]
